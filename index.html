@@ -46,7 +46,7 @@ h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height
       <div class="status" id="daily-status">Daily bonus is available once per day.</div>
       <button class="btn gold" id="daily-bonus">🎁 Claim Daily Bonus · +5 Gold</button>
 
-      <div class="warning">Use this interface for local mining simulation and educational tracking. The balance continues to increase only while mining is active.</div>
+      <div class="warning">Mining rewards are calculated as 0.02% of your current Gold Energy balance every second while mining is active.</div>
       <button class="btn secondary" id="mining-status-button">Check Mining Status</button>
       <div class="status" id="mining-status">Mining is ready to start.</div>
     </div>
@@ -104,7 +104,7 @@ h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height
       <p id="user-name">Open this app through Telegram.</p>
       <p class="muted small" id="telegram-id">Telegram details unavailable in preview.</p>
       <div class="stat"><div class="muted small">System status</div><div class="stat-value" id="system-status">Frontend active</div></div>
-      <p class="status">Your balance, mining activity, referrals, and withdrawals are tracked locally in this interface.</p>
+      <p class="status">Your mining activity, referrals, and withdrawals are tracked in this interface.</p>
     </div>
   </section>
 
@@ -119,7 +119,6 @@ h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height
 </div>
 
 <script>
-/* CONFIGURATION: edit these values. */
 const CONFIG = {
   botUsername: "YOUR_BOT_USERNAME",
   rewardBlockId: "YOUR_REWARD_BLOCK_ID",
@@ -142,6 +141,7 @@ if (tg) {
 const $ = id => document.getElementById(id);
 const user = tg?.initDataUnsafe?.user;
 const storageKey = "minehub_demo_" + (user?.id || "preview");
+
 let demoState = {
   energy: 0,
   lastDailyClaim: "",
@@ -230,14 +230,15 @@ $("stop-mining-button").addEventListener("click", () => {
 
 setInterval(() => {
   if (demoState.miningActive) {
-    demoState.energy += 1;
+    const rate = Number(CONFIG.energyYieldPercent) / 100;
+    const earned = demoState.energy * rate;
+    demoState.energy += earned;
     demoState.miningSeconds += 1;
     updateBalanceFromEnergy();
     saveDemoState();
   }
 }, 1000);
 
-/* Daily bonus */
 $("daily-bonus").addEventListener("click", async () => {
   if (demoState.lastDailyClaim === todayKey()) {
     $("daily-status").textContent = "Daily bonus already claimed today.";
@@ -251,7 +252,6 @@ $("daily-bonus").addEventListener("click", async () => {
   $("daily-status").textContent = "Daily bonus added: +5 Gold Energy.";
 });
 
-/* Referral link */
 function createReferralLink() {
   if (!CONFIG.botUsername || CONFIG.botUsername === "YOUR_BOT_USERNAME") {
     $("referral-link").value = "Set botUsername in CONFIG first.";
@@ -284,7 +284,6 @@ $("share-button").addEventListener("click", () => {
   if (tg?.openTelegramLink) tg.openTelegramLink(url); else window.open(url, "_blank");
 });
 
-/* AdsGram Reward block */
 $("reward-button").addEventListener("click", async () => {
   const status = $("reward-status");
   if (!CONFIG.rewardBlockId || CONFIG.rewardBlockId.includes("YOUR_")) {
@@ -312,7 +311,6 @@ $("reward-button").addEventListener("click", async () => {
   }
 });
 
-/* AdsGram Task widget */
 if (/^task-\d+$/.test(CONFIG.taskBlockId)) {
   const container = $("task-container");
   container.replaceChildren();
@@ -330,14 +328,12 @@ if (/^task-\d+$/.test(CONFIG.taskBlockId)) {
   container.appendChild(task);
 }
 
-/* Mining status */
 $("mining-status-button").addEventListener("click", () => {
   $("mining-status").textContent = demoState.miningActive
     ? "Mining is active and increasing energy in real time."
     : "Mining is ready to start.";
 });
 
-/* Withdrawal */
 $("withdraw-button").addEventListener("click", () => {
   const address = $("ltc-address").value.trim();
   const amount = Number($("withdraw-amount").value);
@@ -352,7 +348,6 @@ $("withdraw-button").addEventListener("click", () => {
   $("withdraw-status").textContent = "Withdrawal request ready. Connect your payout flow to process it.";
 });
 
-/* Parse Telegram referral parameter */
 const query = new URLSearchParams(location.search);
 const startParam = query.get("tgWebAppStartParam") || "";
 if (startParam.startsWith("ref_")) {
