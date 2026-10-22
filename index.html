@@ -30,23 +30,25 @@ h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height
       <div class="coin">⚡</div>
       <h1>Gold Energy Mining</h1>
       <div class="muted">Your mining dashboard</div>
-      <div class="balance" id="balance">$0.000000</div>
-      <div class="muted small">Mining balance</div>
+      <div class="balance" id="balance">$0.000002</div>
+      <div class="muted small">Mining live balance</div>
       <div style="height:14px"></div>
+
       <div class="grid">
         <div class="stat"><div class="muted small">Gold Energy</div><div class="stat-value" id="energy">4 Gold</div></div>
-        <div class="stat"><div class="muted small">Daily earnings</div><div class="stat-value" id="daily-earnings">$0.0001</div></div>
-        <div class="stat"><div class="muted small">Energy yield rate</div><div class="stat-value">0.02%</div></div>
+        <div class="stat"><div class="muted small">Daily balance</div><div class="stat-value" id="daily-balance">$0.000000</div></div>
+        <div class="stat"><div class="muted small">Profit ready</div><div class="stat-value" id="pending-profit">$0.000000</div></div>
         <div class="stat"><div class="muted small">Referral count</div><div class="stat-value" id="ref-count-home">0</div></div>
       </div>
 
       <button class="btn gold" id="start-mining-button">⛏️ Start Mining</button>
       <button class="btn secondary hidden" id="stop-mining-button">⏸️ Stop Mining</button>
+      <button class="btn primary" id="collect-profit-button">💰 Collect Profit</button>
 
       <div class="status" id="daily-status">Daily bonus is available once per day.</div>
       <button class="btn gold" id="daily-bonus">🎁 Claim Daily Bonus · +5 Gold</button>
 
-      <div class="warning">Gold Energy is increased only by daily bonuses and ad rewards. Mining balance rises automatically from the 0.02% daily yield based on your current Gold Energy.</div>
+      <div class="warning">Gold Energy is increased only from reward bonuses and ad rewards. Mining does not add Gold Energy; it adds live mining profit, which can be collected into the daily balance.</div>
       <button class="btn secondary" id="mining-status-button">Check Mining Status</button>
       <div class="status" id="mining-status">Mining is ready to start.</div>
     </div>
@@ -87,14 +89,14 @@ h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height
         <div class="stat"><div class="muted small">Minimum withdrawal</div><div class="stat-value">$5.00</div></div>
         <div class="stat"><div class="muted small">Payment method</div><div class="stat-value">Litecoin (LTC)</div></div>
       </div>
-      <p class="muted small">Enter your Litecoin receiving address.</p>
+      <p class="muted small">Enter your Litecoin receiving address. Withdrawal is allowed only when daily balance is at least $5.00.</p>
       <label for="ltc-address" class="small">Litecoin address</label>
       <input class="field" id="ltc-address" placeholder="Enter your LTC receiving address" autocomplete="off">
       <label for="withdraw-amount" class="small" style="display:block;margin-top:12px">Withdrawal amount (USD)</label>
       <input class="field" id="withdraw-amount" type="number" min="5" step="0.01" placeholder="Minimum $5.00">
       <button class="btn primary" id="withdraw-button">Submit Withdrawal Request</button>
       <div class="status" id="withdraw-status">Withdrawal flow is ready when payout settings are configured.</div>
-      <div class="warning">Only enter a valid receiving address. Keep your wallet information secure and confirm payment details before submitting a request.</div>
+      <div class="warning">Only enter a valid receiving address. Withdrawals deduct from the daily balance only if the amount is $5 or more.</div>
     </div>
   </section>
 
@@ -104,7 +106,7 @@ h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height
       <p id="user-name">Open this app through Telegram.</p>
       <p class="muted small" id="telegram-id">Telegram details unavailable in preview.</p>
       <div class="stat"><div class="muted small">System status</div><div class="stat-value" id="system-status">Frontend active</div></div>
-      <p class="status">The mining balance is what counts. Gold Energy is a separate resource that only grows through bonuses and reward ads.</p>
+      <p class="status">Gold Energy is separate from mining profit. Mining live balance can be collected into daily balance, and withdrawals deduct from daily balance when it reaches $5 or more.</p>
     </div>
   </section>
 
@@ -123,60 +125,58 @@ const CONFIG = {
   botUsername: "YOUR_BOT_USERNAME",
   rewardBlockId: "YOUR_REWARD_BLOCK_ID",
   taskBlockId: "task-YOUR_TASK_BLOCK_ID",
-  backendUrl: "",
   dailyBonusGold: 5,
   energyPerAd: 5,
   energyPerTask: 5,
-  energyYieldPercent: 0.02,
   starterGold: 4,
+  energyYieldPercent: 0.02,
   minimumWithdrawalUSD: 5
 };
 
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  try { tg.setHeaderColor("#0b1020"); tg.setBackgroundColor("#0b1020"); } catch (_) {}
-}
+if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor("#0b1020"); tg.setBackgroundColor("#0b1020"); } catch (_) {} }
 const $ = id => document.getElementById(id);
 const user = tg?.initDataUnsafe?.user;
 const storageKey = "minehub_demo_" + (user?.id || "preview");
 
-let demoState = {
+let state = {
   goldEnergy: CONFIG.starterGold,
-  miningBalance: 0,
-  lastDailyClaim: "",
+  miningBalance: 0.000002,
+  dailyBalance: 0,
+  pendingProfit: 0,
   referrals: 0,
   miningActive: false,
-  lastMiningUpdate: Date.now()
+  lastMiningUpdate: Date.now(),
+  lastDailyClaim: ""
 };
 
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
-  if (saved && typeof saved === "object") demoState = { ...demoState, ...saved };
+  if (saved && typeof saved === "object") state = { ...state, ...saved };
 } catch (_) {}
 
 function saveState() {
-  try { localStorage.setItem(storageKey, JSON.stringify(demoState)); } catch (_) {}
+  try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {}
 }
-
 function todayKey() {
   const d = new Date();
   return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
 }
+function formatMoney(v) {
+  return "$" + Number(v || 0).toFixed(6);
+}
 
 function render() {
-  $("energy").textContent = demoState.goldEnergy + " Gold";
-  $("balance").textContent = "$" + Number(demoState.miningBalance || 0).toFixed(6);
-  $("ref-count").textContent = String(demoState.referrals || 0);
-  $("ref-count-home").textContent = String(demoState.referrals || 0);
-
-  const dailyRate = (demoState.goldEnergy * CONFIG.energyYieldPercent) / 100;
-  $("daily-earnings").textContent = "$" + Number(dailyRate || 0).toFixed(6);
+  $("energy").textContent = state.goldEnergy + " Gold";
+  $("balance").textContent = formatMoney(state.miningBalance);
+  $("daily-balance").textContent = formatMoney(state.dailyBalance);
+  $("pending-profit").textContent = formatMoney(state.pendingProfit);
+  $("ref-count").textContent = String(state.referrals || 0);
+  $("ref-count-home").textContent = String(state.referrals || 0);
 }
 
 function refreshDailyButton() {
-  const claimed = demoState.lastDailyClaim === todayKey();
+  const claimed = state.lastDailyClaim === todayKey();
   $("daily-bonus").disabled = claimed;
   $("daily-bonus").style.opacity = claimed ? ".55" : "1";
   $("daily-bonus").textContent = claimed ? "✅ Daily Bonus Already Claimed" : "🎁 Claim Daily Bonus · +5 Gold";
@@ -184,11 +184,11 @@ function refreshDailyButton() {
 }
 
 function updateMiningVisuals() {
-  const isMining = !!demoState.miningActive;
+  const isMining = !!state.miningActive;
   $("start-mining-button").classList.toggle("hidden", isMining);
   $("stop-mining-button").classList.toggle("hidden", !isMining);
   $("mining-status").textContent = isMining
-    ? "Mining is active. Mining balance is increasing."
+    ? "Mining is active. Profit is growing live."
     : "Mining is ready to start.";
 }
 
@@ -213,44 +213,59 @@ document.querySelectorAll("[data-page]").forEach(button => {
 });
 
 $("start-mining-button").addEventListener("click", () => {
-  demoState.miningActive = true;
-  demoState.lastMiningUpdate = Date.now();
+  state.miningActive = true;
+  state.lastMiningUpdate = Date.now();
   saveState();
   updateMiningVisuals();
-  $("daily-status").textContent = "Mining started. Mining balance is counting.";
+  $("daily-status").textContent = "Mining started. Live profit is accumulating.";
 });
 
 $("stop-mining-button").addEventListener("click", () => {
-  demoState.miningActive = false;
+  state.miningActive = false;
   saveState();
   updateMiningVisuals();
   $("daily-status").textContent = "Mining paused. Resume anytime.";
 });
 
+$("collect-profit-button").addEventListener("click", () => {
+  if (state.pendingProfit <= 0) {
+    $("daily-status").textContent = "No profit available to collect yet.";
+    return;
+  }
+  state.dailyBalance += state.pendingProfit;
+  state.pendingProfit = 0;
+  state.miningBalance = 0;
+  saveState();
+  render();
+  $("daily-status").textContent = "Profit collected into daily balance.";
+});
+
 setInterval(() => {
-  if (!demoState.miningActive) return;
+  if (!state.miningActive) return;
 
   const now = Date.now();
-  const elapsedSeconds = (now - demoState.lastMiningUpdate) / 1000;
-  demoState.lastMiningUpdate = now;
+  const elapsedSeconds = (now - state.lastMiningUpdate) / 1000;
+  state.lastMiningUpdate = now;
 
-  // 0.02% of Gold Energy per day
-  const dailyReward = (demoState.goldEnergy * CONFIG.energyYieldPercent) / 100;
-  const perSecond = dailyReward / 86400;
+  // 0.02% of current Gold Energy per day
+  const dailyProfit = (state.goldEnergy * CONFIG.energyYieldPercent) / 100;
+  const perSecond = dailyProfit / 86400;
 
-  demoState.miningBalance += perSecond * elapsedSeconds;
+  const earned = perSecond * elapsedSeconds;
+  state.pendingProfit += earned;
+  state.miningBalance += earned;
+
   saveState();
   render();
 }, 1000);
 
 $("daily-bonus").addEventListener("click", () => {
-  if (demoState.lastDailyClaim === todayKey()) {
+  if (state.lastDailyClaim === todayKey()) {
     $("daily-status").textContent = "Daily bonus already claimed today.";
     return;
   }
-
-  demoState.goldEnergy += CONFIG.dailyBonusGold;
-  demoState.lastDailyClaim = todayKey();
+  state.goldEnergy += CONFIG.dailyBonusGold;
+  state.lastDailyClaim = todayKey();
   saveState();
   render();
   refreshDailyButton();
@@ -304,7 +319,7 @@ $("reward-button").addEventListener("click", async () => {
     const controller = window.Adsgram.init({ blockId: CONFIG.rewardBlockId });
     const result = await controller.show();
     if (result?.done) {
-      demoState.goldEnergy += CONFIG.energyPerAd;
+      state.goldEnergy += CONFIG.energyPerAd;
       saveState();
       render();
       status.textContent = "Reward added: +5 Gold Energy.";
@@ -323,7 +338,7 @@ if (/^task-\d+$/.test(CONFIG.taskBlockId)) {
   task.setAttribute("data-block-id", CONFIG.taskBlockId);
   task.setAttribute("data-debug", "false");
   task.addEventListener("reward", () => {
-    demoState.goldEnergy += CONFIG.energyPerTask;
+    state.goldEnergy += CONFIG.energyPerTask;
     saveState();
     render();
     $("task-status").textContent = "Task reward added: +5 Gold Energy.";
@@ -334,14 +349,15 @@ if (/^task-\d+$/.test(CONFIG.taskBlockId)) {
 }
 
 $("mining-status-button").addEventListener("click", () => {
-  $("mining-status").textContent = demoState.miningActive
-    ? "Mining is active and the mining balance is increasing."
+  $("mining-status").textContent = state.miningActive
+    ? "Mining is active and the live profit is increasing."
     : "Mining is ready to start.";
 });
 
 $("withdraw-button").addEventListener("click", () => {
   const address = $("ltc-address").value.trim();
   const amount = Number($("withdraw-amount").value);
+
   if (!address) {
     $("withdraw-status").textContent = "Enter your Litecoin receiving address.";
     return;
@@ -350,7 +366,15 @@ $("withdraw-button").addEventListener("click", () => {
     $("withdraw-status").textContent = "Minimum withdrawal amount is $5.00.";
     return;
   }
-  $("withdraw-status").textContent = "Withdrawal request ready. Connect your payout flow to process it.";
+  if (state.dailyBalance < amount) {
+    $("withdraw-status").textContent = "Insufficient daily balance. You need at least $5.00 to withdraw.";
+    return;
+  }
+
+  state.dailyBalance -= amount;
+  saveState();
+  render();
+  $("withdraw-status").textContent = "Withdrawal request created. Daily balance has been reduced by $" + Number(amount).toFixed(2) + ".";
 });
 
 const query = new URLSearchParams(location.search);
