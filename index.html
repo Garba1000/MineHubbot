@@ -154,8 +154,8 @@
       const d = new Date();
       return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
     }
-    function formatMoney(v) {
-      return "$" + Number(v || 0).toFixed(6);
+    function formatMoney(value) {
+      return "$" + Number(value || 0).toFixed(8);
     }
 
     function render() {
