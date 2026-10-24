@@ -1,387 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#0b1020">
-<title>MineHub — Gold Energy Mining</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-<style>
-:root{--bg:#0b1020;--panel:#151f35;--panel2:#10192b;--text:#f5f7ff;--muted:#98a8c6;--green:#69e6b2;--gold:#ffc857;--blue:#76aaff;--border:#293653;--warn:#ffd48a}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2d4b,var(--bg) 65%);color:var(--text);font:14px/1.45 Arial,Helvetica,sans-serif}
-.app{max-width:520px;margin:auto;padding:18px 15px 35px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.logo{font-size:23px;font-weight:800}.tag{font-size:10px;color:var(--green);border:1px solid #3a705f;padding:6px 9px;border-radius:20px}
-.card{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:19px;padding:18px;margin-bottom:13px}.hero{text-align:center;padding-top:24px}.coin{height:88px;width:88px;display:grid;place-items:center;margin:0 auto 14px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff0ad,#e5aa35 50%,#8c5216);color:#402b08;font-size:39px;box-shadow:0 0 30px #e5aa352a}
-h1{font-size:25px;margin:0 0 8px}h2{font-size:17px;margin:0 0 12px}p{line-height:1.5}.muted{color:var(--muted)}.small{font-size:12px}.balance{font-size:27px;font-weight:800;margin:15px 0 4px;overflow-wrap:anywhere}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#0b1426;border:1px solid var(--border);padding:13px;border-radius:13px;min-width:0}.stat-value{font-size:17px;font-weight:800;margin-top:7px;overflow-wrap:anywhere}
-.btn{width:100%;border:0;border-radius:12px;padding:13px;font-weight:800;margin-top:10px;cursor:pointer}.primary{background:var(--green);color:#092117}.gold{background:var(--gold);color:#332200}.secondary{background:#263957;border:1px solid #3a5073;color:white}
-.warning{background:#302719;border:1px solid #65502c;color:var(--warn);border-radius:12px;padding:12px;line-height:1.5;font-size:12px;text-align:left;margin:14px 0}.status{margin-top:10px;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
-.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:18px 0 12px}.nav button{padding:11px 3px;border:1px solid var(--border);border-radius:11px;color:#dbe5fb;background:#151f35;font-size:11px}.nav button.active{border-color:var(--green);color:var(--green)}.page{display:none}.page.active{display:block}
-.input-row{display:flex;gap:7px;margin-top:12px}.input-row input{min-width:0;flex:1;color:white;background:#0a1222;border:1px solid var(--border);border-radius:10px;padding:11px}.input-row button{width:auto;margin:0;padding:10px 13px}
-.field{display:block;width:100%;margin-top:8px;background:#0a1222;border:1px solid var(--border);border-radius:10px;padding:12px;color:white}.task-box{min-height:60px;padding:10px 0}.footer{text-align:center;color:#7585a3;font-size:11px;margin-top:24px}.hidden{display:none!important}.pill{display:inline-block;border:1px solid #65502c;color:var(--gold);border-radius:20px;padding:4px 8px;font-size:11px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0b1020">
+  <title>MineHub — Gold Energy Mining</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+  <style>
+    :root{--bg:#0b1020;--panel:#151f35;--panel2:#10192b;--text:#f5f7ff;--muted:#98a8c6;--green:#69e6b2;--gold:#ffc857;--blue:#76aaff;--border:#293653;--warn:#ffd48a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2d4b,var(--bg) 65%);color:var(--text);font:14px/1.45 Arial,Helvetica,sans-serif}
+    .app{max-width:520px;margin:auto;padding:18px 15px 35px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.logo{font-size:23px;font-weight:800}.tag{font-size:12px;letter-spacing:1.1px;color:var(--gold);text-transform:uppercase;font-weight:700}.card{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:19px;padding:18px;margin-bottom:13px}.hero{text-align:center;padding-top:24px}.coin{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 30%,#ffe7a8,#ffc857 49%,#c98615 100%);box-shadow:0 14px 30px rgba(255,200,87,.28);font-size:30px;margin:0 auto 12px}.balance{font-size:27px;font-weight:800;margin:15px 0 4px;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#0b1426;border:1px solid var(--border);padding:13px;border-radius:13px;min-width:0}.stat-value{font-size:17px;font-weight:700;overflow-wrap:anywhere}.btn{width:100%;border:0;border-radius:12px;padding:13px;font-weight:800;margin-top:10px;cursor:pointer}.primary{background:var(--green);color:#092117}.gold{background:var(--gold);color:#332200}.secondary{background:#1c2b44;color:var(--text);border:1px solid var(--border)}.hidden{display:none}.warning{background:#302719;border:1px solid #65502c;color:var(--warn);border-radius:12px;padding:12px;line-height:1.5;font-size:12px;text-align:left;margin:14px 0}.status{margin-top:10px;font-size:12px;color:var(--muted)}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:18px 0 12px}.nav button{padding:11px 3px;border:1px solid var(--border);border-radius:11px;color:#dbe5fb;background:#151f35;font-weight:700}.nav .active{background:linear-gradient(135deg,#1f3a66,#2b5ab0);border-color:#5a88d2}.page{display:none}.page.active{display:block}.input-row{display:flex;gap:7px;margin-top:12px}.input-row input{min-width:0;flex:1;color:white;background:#0a1222;border:1px solid var(--border);border-radius:10px;padding:11px}.input-row button{width:auto;padding:11px 14px}.field{display:block;width:100%;margin-top:8px;background:#0a1222;border:1px solid var(--border);border-radius:10px;padding:12px;color:white}.task-box{min-height:60px;padding:10px 0}.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
+  </style>
 </head>
 <body>
-<div class="app">
-  <header class="header"><div class="logo">⛏️ MineHub</div><div class="tag">GOLD ENERGY</div></header>
+  <div class="app">
+    <header class="header"><div class="logo">⛏️ MineHub</div><div class="tag">GOLD ENERGY</div></header>
 
-  <section class="page active" id="page-home">
-    <div class="card hero">
-      <div class="coin">⚡</div>
-      <h1>Gold Energy Mining</h1>
-      <div class="muted">Your mining dashboard</div>
-      <div class="balance" id="balance">$0.000002</div>
-      <div class="muted small">Mining live balance</div>
-      <div style="height:14px"></div>
+    <section class="page active" id="page-home">
+      <div class="card hero">
+        <div class="coin">⚡</div>
+        <h1>Gold Energy Mining</h1>
+        <div class="muted">Your mining dashboard</div>
+        <div class="balance" id="balance">$0.000002</div>
+        <div class="muted small">Mining live balance</div>
+        <div style="height:14px"></div>
 
-      <div class="grid">
-        <div class="stat"><div class="muted small">Gold Energy</div><div class="stat-value" id="energy">4 Gold</div></div>
-        <div class="stat"><div class="muted small">Daily balance</div><div class="stat-value" id="daily-balance">$0.000000</div></div>
-        <div class="stat"><div class="muted small">Profit ready</div><div class="stat-value" id="pending-profit">$0.000000</div></div>
-        <div class="stat"><div class="muted small">Referral count</div><div class="stat-value" id="ref-count-home">0</div></div>
+        <div class="grid">
+          <div class="stat"><div class="muted small">Gold Energy</div><div class="stat-value" id="energy">4 Gold</div></div>
+          <div class="stat"><div class="muted small">Daily balance</div><div class="stat-value" id="daily-balance">$0.000000</div></div>
+          <div class="stat"><div class="muted small">Profit ready</div><div class="stat-value" id="pending-profit">$0.000000</div></div>
+          <div class="stat"><div class="muted small">Referral count</div><div class="stat-value" id="ref-count-home">0</div></div>
+        </div>
+
+        <button class="btn gold" id="start-mining-button">⛏️ Start Mining</button>
+        <button class="btn secondary hidden" id="stop-mining-button">⏸️ Stop Mining</button>
+        <button class="btn primary" id="collect-profit-button">💰 Collect Profit</button>
+
+        <div class="status" id="daily-status">Daily bonus is available once per day.</div>
+        <button class="btn gold" id="daily-bonus">🎁 Claim Daily Bonus · +5 Gold</button>
+
+        <div class="warning">Gold Energy is increased only from reward bonuses and ad rewards. Mining does not add Gold Energy; it adds live mining profit, which can be collected into the daily balance.</div>
+        <button class="btn secondary" id="mining-status-button">Check Mining Status</button>
+        <div class="status" id="mining-status">Mining is ready to start.</div>
       </div>
+    </section>
 
-      <button class="btn gold" id="start-mining-button">⛏️ Start Mining</button>
-      <button class="btn secondary hidden" id="stop-mining-button">⏸️ Stop Mining</button>
-      <button class="btn primary" id="collect-profit-button">💰 Collect Profit</button>
-
-      <div class="status" id="daily-status">Daily bonus is available once per day.</div>
-      <button class="btn gold" id="daily-bonus">🎁 Claim Daily Bonus · +5 Gold</button>
-
-      <div class="warning">Gold Energy is increased only from reward bonuses and ad rewards. Mining does not add Gold Energy; it adds live mining profit, which can be collected into the daily balance.</div>
-      <button class="btn secondary" id="mining-status-button">Check Mining Status</button>
-      <div class="status" id="mining-status">Mining is ready to start.</div>
-    </div>
-  </section>
-
-  <section class="page" id="page-ads">
-    <div class="card">
-      <h2>🎁 Optional Reward Ad</h2>
-      <p class="muted small">Ads are optional. Completed reward ads grant 5 Gold Energy.</p>
-      <button class="btn primary" id="reward-button">Watch Optional Ad · +5 Gold</button>
-      <div class="status" id="reward-status">Configure your approved AdsGram Reward block ID first.</div>
-    </div>
-    <div class="card">
-      <h2>📋 Optional Task Ad</h2>
-      <p class="muted small">Task availability depends on your AdsGram account.</p>
-      <div class="task-box" id="task-container"><div class="status">Task block not configured.</div></div>
-      <div class="status" id="task-status">Task rewards may be awarded when the task is completed.</div>
-    </div>
-  </section>
-
-  <section class="page" id="page-referrals">
-    <div class="card">
-      <h2>👥 Invite Friends</h2>
-      <p class="muted">Share your personal Telegram Mini App link.</p>
-      <div class="input-row"><input id="referral-link" readonly value="Configure your bot username"><button class="btn secondary" id="copy-button">Copy</button></div>
-      <button class="btn primary" id="share-button">Share Referral Link</button>
-      <div class="grid" style="margin-top:15px">
-        <div class="stat"><div class="muted small">Invited users</div><div class="stat-value" id="ref-count">0</div></div>
-        <div class="stat"><div class="muted small">Referral bonus</div><div class="stat-value">Configured by app</div></div>
+    <section class="page" id="page-ads">
+      <div class="card">
+        <h2>🎁 Optional Reward Ad</h2>
+        <p class="muted small">Ads are optional. Completed reward ads grant 5 Gold Energy.</p>
+        <button class="btn primary" id="reward-button">Watch Optional Ad · +5 Gold</button>
+        <div class="status" id="reward-status">Configure your approved AdsGram Reward block ID first.</div>
       </div>
-    </div>
-  </section>
-
-  <section class="page" id="page-withdraw">
-    <div class="card">
-      <h2>💸 Litecoin Withdrawal</h2>
-      <div class="grid">
-        <div class="stat"><div class="muted small">Minimum withdrawal</div><div class="stat-value">$5.00</div></div>
-        <div class="stat"><div class="muted small">Payment method</div><div class="stat-value">Litecoin (LTC)</div></div>
+      <div class="card">
+        <h2>📋 Optional Task Ad</h2>
+        <p class="muted small">Task availability depends on your AdsGram account.</p>
+        <div class="task-box" id="task-container"><div class="status">Task block not configured.</div></div>
+        <div class="status" id="task-status">Task rewards may be awarded when the task is completed.</div>
       </div>
-      <p class="muted small">Enter your Litecoin receiving address. Withdrawal is allowed only when daily balance is at least $5.00.</p>
-      <label for="ltc-address" class="small">Litecoin address</label>
-      <input class="field" id="ltc-address" placeholder="Enter your LTC receiving address" autocomplete="off">
-      <label for="withdraw-amount" class="small" style="display:block;margin-top:12px">Withdrawal amount (USD)</label>
-      <input class="field" id="withdraw-amount" type="number" min="5" step="0.01" placeholder="Minimum $5.00">
-      <button class="btn primary" id="withdraw-button">Submit Withdrawal Request</button>
-      <div class="status" id="withdraw-status">Withdrawal flow is ready when payout settings are configured.</div>
-      <div class="warning">Only enter a valid receiving address. Withdrawals deduct from the daily balance only if the amount is $5 or more.</div>
-    </div>
-  </section>
+    </section>
 
-  <section class="page" id="page-account">
-    <div class="card">
-      <h2>👤 My Account</h2>
-      <p id="user-name">Open this app through Telegram.</p>
-      <p class="muted small" id="telegram-id">Telegram details unavailable in preview.</p>
-      <div class="stat"><div class="muted small">System status</div><div class="stat-value" id="system-status">Frontend active</div></div>
-      <p class="status">Gold Energy is separate from mining profit. Mining live balance can be collected into daily balance, and withdrawals deduct from daily balance when it reaches $5 or more.</p>
-    </div>
-  </section>
+    <section class="page" id="page-referrals">
+      <div class="card">
+        <h2>👥 Invite Friends</h2>
+        <p class="muted">Share your personal Telegram Mini App link.</p>
+        <div class="input-row"><input id="referral-link" readonly value="Configure your bot username"><button class="btn secondary" id="copy-button">Copy</button></div>
+        <button class="btn primary" id="share-button">Share Referral Link</button>
+        <div class="grid" style="margin-top:15px">
+          <div class="stat"><div class="muted small">Invited users</div><div class="stat-value" id="ref-count">0</div></div>
+          <div class="stat"><div class="muted small">Referral bonus</div><div class="stat-value">Configured by app</div></div>
+        </div>
+      </div>
+    </section>
 
-  <nav class="nav">
-    <button class="active" data-page="home">⛏️ Mine</button>
-    <button data-page="ads">🎁 Ads & Tasks</button>
-    <button data-page="referrals">👥 Invite</button>
-    <button data-page="withdraw">💸 Withdraw</button>
-  </nav>
-  <button class="btn secondary" data-page="account">👤 Account & Safety</button>
-  <div class="footer">MineHub · Mining app</div>
-</div>
+    <section class="page" id="page-withdraw">
+      <div class="card">
+        <h2>💸 Litecoin Withdrawal</h2>
+        <div class="grid">
+          <div class="stat"><div class="muted small">Minimum withdrawal</div><div class="stat-value">$5.00</div></div>
+          <div class="stat"><div class="muted small">Payment method</div><div class="stat-value">Litecoin (LTC)</div></div>
+        </div>
+        <p class="muted small">Enter your Litecoin receiving address. Withdrawal is allowed only when daily balance is at least $5.00.</p>
+        <label for="ltc-address" class="small">Litecoin address</label>
+        <input class="field" id="ltc-address" placeholder="Enter your LTC receiving address" autocomplete="off">
+        <label for="withdraw-amount" class="small" style="display:block;margin-top:12px">Withdrawal amount (USD)</label>
+        <input class="field" id="withdraw-amount" type="number" min="5" step="0.01" placeholder="Minimum $5.00">
+        <button class="btn primary" id="withdraw-button">Submit Withdrawal Request</button>
+        <div class="status" id="withdraw-status">Withdrawal flow is ready when payout settings are configured.</div>
+        <div class="warning">Only enter a valid receiving address. Withdrawals deduct from the daily balance only if the amount is $5 or more.</div>
+      </div>
+    </section>
 
-<script>
-const CONFIG = {
-  botUsername: "YOUR_BOT_USERNAME",
-  rewardBlockId: "YOUR_REWARD_BLOCK_ID",
-  taskBlockId: "task-YOUR_TASK_BLOCK_ID",
-  dailyBonusGold: 5,
-  energyPerAd: 5,
-  energyPerTask: 5,
-  starterGold: 4,
-  energyYieldPercent: 0.02,
-  minimumWithdrawalUSD: 5
-};
+    <section class="page" id="page-account">
+      <div class="card">
+        <h2>👤 My Account</h2>
+        <p id="user-name">Open this app through Telegram.</p>
+        <p class="muted small" id="telegram-id">Telegram details unavailable in preview.</p>
+        <div class="stat"><div class="muted small">System status</div><div class="stat-value" id="system-status">Frontend active</div></div>
+        <p class="status">Gold Energy is separate from mining profit. Mining live balance can be collected into daily balance, and withdrawals deduct from daily balance when it reaches $5 or more.</p>
+      </div>
+    </section>
 
-const tg = window.Telegram?.WebApp;
-if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor("#0b1020"); tg.setBackgroundColor("#0b1020"); } catch (_) {} }
-const $ = id => document.getElementById(id);
-const user = tg?.initDataUnsafe?.user;
-const storageKey = "minehub_demo_" + (user?.id || "preview");
+    <nav class="nav">
+      <button class="active" data-page="home">⛏️ Mine</button>
+      <button data-page="ads">🎁 Ads & Tasks</button>
+      <button data-page="referrals">👥 Invite</button>
+      <button data-page="withdraw">💸 Withdraw</button>
+    </nav>
+    <button class="btn secondary" data-page="account">👤 Account & Safety</button>
+    <div class="footer">MineHub · Mining app</div>
+  </div>
 
-let state = {
-  goldEnergy: CONFIG.starterGold,
-  miningBalance: 0.000002,
-  dailyBalance: 0,
-  pendingProfit: 0,
-  referrals: 0,
-  miningActive: false,
-  lastMiningUpdate: Date.now(),
-  lastDailyClaim: ""
-};
+  <script>
+    const CONFIG = {
+      botUsername: "YOUR_BOT_USERNAME",
+      rewardBlockId: "YOUR_REWARD_BLOCK_ID",
+      taskBlockId: "task-YOUR_TASK_BLOCK_ID",
+      dailyBonusGold: 5,
+      energyPerAd: 5,
+      energyPerTask: 5,
+      starterGold: 4,
+      energyYieldPercent: 0.02,
+      minimumWithdrawalUSD: 5
+    };
 
-try {
-  const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
-  if (saved && typeof saved === "object") state = { ...state, ...saved };
-} catch (_) {}
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor("#0b1020"); tg.setBackgroundColor("#0b1020"); } catch (_) {} }
+    const $ = id => document.getElementById(id);
+    const user = tg?.initDataUnsafe?.user;
+    const storageKey = "minehub_demo_" + (user?.id || "preview");
 
-function saveState() {
-  try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {}
-}
-function todayKey() {
-  const d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-}
-function formatMoney(v) {
-  return "$" + Number(v || 0).toFixed(6);
-}
+    let state = {
+      goldEnergy: CONFIG.starterGold,
+      miningBalance: 0.000002,
+      dailyBalance: 0,
+      pendingProfit: 0,
+      referrals: 0,
+      miningActive: false,
+      lastMiningUpdate: Date.now(),
+      lastDailyClaim: ""
+    };
 
-function render() {
-  $("energy").textContent = state.goldEnergy + " Gold";
-  $("balance").textContent = formatMoney(state.miningBalance);
-  $("daily-balance").textContent = formatMoney(state.dailyBalance);
-  $("pending-profit").textContent = formatMoney(state.pendingProfit);
-  $("ref-count").textContent = String(state.referrals || 0);
-  $("ref-count-home").textContent = String(state.referrals || 0);
-}
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+      if (saved && typeof saved === "object") state = { ...state, ...saved };
+    } catch (_) {}
 
-function refreshDailyButton() {
-  const claimed = state.lastDailyClaim === todayKey();
-  $("daily-bonus").disabled = claimed;
-  $("daily-bonus").style.opacity = claimed ? ".55" : "1";
-  $("daily-bonus").textContent = claimed ? "✅ Daily Bonus Already Claimed" : "🎁 Claim Daily Bonus · +5 Gold";
-  if (claimed) $("daily-status").textContent = "Today's bonus has already been claimed.";
-}
+    function saveState() {
+      try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {}
+    }
+    function todayKey() {
+      const d = new Date();
+      return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+    }
+    function formatMoney(v) {
+      return "$" + Number(v || 0).toFixed(6);
+    }
 
-function updateMiningVisuals() {
-  const isMining = !!state.miningActive;
-  $("start-mining-button").classList.toggle("hidden", isMining);
-  $("stop-mining-button").classList.toggle("hidden", !isMining);
-  $("mining-status").textContent = isMining
-    ? "Mining is active. Profit is growing live."
-    : "Mining is ready to start.";
-}
+    function render() {
+      $("energy").textContent = state.goldEnergy + " Gold";
+      $("balance").textContent = formatMoney(state.miningBalance);
+      $("daily-balance").textContent = formatMoney(state.dailyBalance);
+      $("pending-profit").textContent = formatMoney(state.pendingProfit);
+      $("ref-count").textContent = String(state.referrals || 0);
+      $("ref-count-home").textContent = String(state.referrals || 0);
+    }
 
-render();
-refreshDailyButton();
-updateMiningVisuals();
+    function refreshDailyButton() {
+      const claimed = state.lastDailyClaim === todayKey();
+      $("daily-bonus").disabled = claimed;
+      $("daily-bonus").style.opacity = claimed ? ".55" : "1";
+      $("daily-bonus").textContent = claimed ? "✅ Daily Bonus Already Claimed" : "🎁 Claim Daily Bonus · +5 Gold";
+      if (claimed) $("daily-status").textContent = "Today's bonus has already been claimed.";
+    }
 
-if (user) {
-  $("user-name").textContent = "Welcome, " + (user.first_name || "Telegram user");
-  $("telegram-id").textContent = "Telegram ID: " + user.id;
-  $("system-status").textContent = "Telegram opened";
-} else {
-  $("user-name").textContent = "Preview mode — open through Telegram for account details.";
-}
+    function updateMiningVisuals() {
+      const isMining = !!state.miningActive;
+      $("start-mining-button").classList.toggle("hidden", isMining);
+      $("stop-mining-button").classList.toggle("hidden", !isMining);
+      $("mining-status").textContent = isMining
+        ? "Mining is active. Profit is growing live."
+        : "Mining is ready to start.";
+    }
 
-document.querySelectorAll("[data-page]").forEach(button => {
-  button.addEventListener("click", () => {
-    const page = button.dataset.page;
-    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "page-" + page));
-    document.querySelectorAll(".nav [data-page]").forEach(b => b.classList.toggle("active", b === button));
-  });
-});
+    function applyMiningProgress(now = Date.now()) {
+      if (!state.miningActive) {
+        state.lastMiningUpdate = now;
+        saveState();
+        return;
+      }
 
-$("start-mining-button").addEventListener("click", () => {
-  state.miningActive = true;
-  state.lastMiningUpdate = Date.now();
-  saveState();
-  updateMiningVisuals();
-  $("daily-status").textContent = "Mining started. Live profit is accumulating.";
-});
+      const elapsedSeconds = Math.max(0, (now - state.lastMiningUpdate) / 1000);
+      state.lastMiningUpdate = now;
 
-$("stop-mining-button").addEventListener("click", () => {
-  state.miningActive = false;
-  saveState();
-  updateMiningVisuals();
-  $("daily-status").textContent = "Mining paused. Resume anytime.";
-});
+      const dailyProfit = (state.goldEnergy * CONFIG.energyYieldPercent) / 100;
+      const perSecond = dailyProfit / 86400;
+      const earned = perSecond * elapsedSeconds;
 
-$("collect-profit-button").addEventListener("click", () => {
-  if (state.pendingProfit <= 0) {
-    $("daily-status").textContent = "No profit available to collect yet.";
-    return;
-  }
-  state.dailyBalance += state.pendingProfit;
-  state.pendingProfit = 0;
-  state.miningBalance = 0;
-  saveState();
-  render();
-  $("daily-status").textContent = "Profit collected into daily balance.";
-});
+      if (earned > 0) {
+        state.pendingProfit += earned;
+        state.miningBalance += earned;
+      }
 
-setInterval(() => {
-  if (!state.miningActive) return;
-
-  const now = Date.now();
-  const elapsedSeconds = (now - state.lastMiningUpdate) / 1000;
-  state.lastMiningUpdate = now;
-
-  // 0.02% of current Gold Energy per day
-  const dailyProfit = (state.goldEnergy * CONFIG.energyYieldPercent) / 100;
-  const perSecond = dailyProfit / 86400;
-
-  const earned = perSecond * elapsedSeconds;
-  state.pendingProfit += earned;
-  state.miningBalance += earned;
-
-  saveState();
-  render();
-}, 1000);
-
-$("daily-bonus").addEventListener("click", () => {
-  if (state.lastDailyClaim === todayKey()) {
-    $("daily-status").textContent = "Daily bonus already claimed today.";
-    return;
-  }
-  state.goldEnergy += CONFIG.dailyBonusGold;
-  state.lastDailyClaim = todayKey();
-  saveState();
-  render();
-  refreshDailyButton();
-  $("daily-status").textContent = "Daily bonus added: +5 Gold Energy.";
-});
-
-function createReferralLink() {
-  if (!CONFIG.botUsername || CONFIG.botUsername === "YOUR_BOT_USERNAME") {
-    $("referral-link").value = "Set botUsername in CONFIG first.";
-  } else if (!user?.id) {
-    $("referral-link").value = "Open the app through Telegram to create your referral link.";
-  } else {
-    $("referral-link").value = "https://t.me/" + CONFIG.botUsername + "?startapp=" + encodeURIComponent("ref_" + user.id);
-  }
-}
-createReferralLink();
-
-$("copy-button").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText($("referral-link").value);
-    $("copy-button").textContent = "Copied";
-    setTimeout(() => $("copy-button").textContent = "Copy", 1400);
-  } catch (_) {
-    $("referral-link").select();
-    $("copy-button").textContent = "Select link";
-  }
-});
-
-$("share-button").addEventListener("click", () => {
-  const link = $("referral-link").value;
-  if (!user?.id || CONFIG.botUsername === "YOUR_BOT_USERNAME") {
-    alert("Configure your bot username and open the app in Telegram first.");
-    return;
-  }
-  const url = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("Join me on MineHub!");
-  if (tg?.openTelegramLink) tg.openTelegramLink(url); else window.open(url, "_blank");
-});
-
-$("reward-button").addEventListener("click", async () => {
-  const status = $("reward-status");
-  if (!CONFIG.rewardBlockId || CONFIG.rewardBlockId.includes("YOUR_")) {
-    status.textContent = "Enter your approved AdsGram Reward block ID in CONFIG.";
-    return;
-  }
-  if (!window.Adsgram?.init) {
-    status.textContent = "AdsGram SDK unavailable. Check your block ID and network connection.";
-    return;
-  }
-  try {
-    status.textContent = "Loading optional ad...";
-    const controller = window.Adsgram.init({ blockId: CONFIG.rewardBlockId });
-    const result = await controller.show();
-    if (result?.done) {
-      state.goldEnergy += CONFIG.energyPerAd;
       saveState();
       render();
-      status.textContent = "Reward added: +5 Gold Energy.";
-    } else {
-      status.textContent = "Ad not completed. No reward added.";
     }
-  } catch (_) {
-    status.textContent = "Ad unavailable or closed. No reward added.";
-  }
-});
 
-if (/^task-\d+$/.test(CONFIG.taskBlockId)) {
-  const container = $("task-container");
-  container.replaceChildren();
-  const task = document.createElement("adsgram-task");
-  task.setAttribute("data-block-id", CONFIG.taskBlockId);
-  task.setAttribute("data-debug", "false");
-  task.addEventListener("reward", () => {
-    state.goldEnergy += CONFIG.energyPerTask;
-    saveState();
     render();
-    $("task-status").textContent = "Task reward added: +5 Gold Energy.";
-  });
-  task.addEventListener("onError", () => { container.textContent = "Task could not load. Try again later."; });
-  task.addEventListener("onBannerNotFound", () => { container.textContent = "No task is available right now."; });
-  container.appendChild(task);
-}
+    refreshDailyButton();
+    updateMiningVisuals();
 
-$("mining-status-button").addEventListener("click", () => {
-  $("mining-status").textContent = state.miningActive
-    ? "Mining is active and the live profit is increasing."
-    : "Mining is ready to start.";
-});
+    if (user) {
+      $("user-name").textContent = "Welcome, " + (user.first_name || "Telegram user");
+      $("telegram-id").textContent = "Telegram ID: " + user.id;
+      $("system-status").textContent = "Telegram opened";
+    } else {
+      $("user-name").textContent = "Preview mode — open through Telegram for account details.";
+    }
 
-$("withdraw-button").addEventListener("click", () => {
-  const address = $("ltc-address").value.trim();
-  const amount = Number($("withdraw-amount").value);
+    document.querySelectorAll("[data-page]").forEach(button => {
+      button.addEventListener("click", () => {
+        const page = button.dataset.page;
+        document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "page-" + page));
+        document.querySelectorAll(".nav [data-page]").forEach(b => b.classList.toggle("active", b === button));
+      });
+    });
 
-  if (!address) {
-    $("withdraw-status").textContent = "Enter your Litecoin receiving address.";
-    return;
-  }
-  if (!Number.isFinite(amount) || amount < CONFIG.minimumWithdrawalUSD) {
-    $("withdraw-status").textContent = "Minimum withdrawal amount is $5.00.";
-    return;
-  }
-  if (state.dailyBalance < amount) {
-    $("withdraw-status").textContent = "Insufficient daily balance. You need at least $5.00 to withdraw.";
-    return;
-  }
+    $("start-mining-button").addEventListener("click", () => {
+      state.miningActive = true;
+      state.lastMiningUpdate = Date.now();
+      saveState();
+      updateMiningVisuals();
+      $("daily-status").textContent = "Mining started. Live profit is accumulating.";
+    });
 
-  state.dailyBalance -= amount;
-  saveState();
-  render();
-  $("withdraw-status").textContent = "Withdrawal request created. Daily balance has been reduced by $" + Number(amount).toFixed(2) + ".";
-});
+    $("stop-mining-button").addEventListener("click", () => {
+      state.miningActive = false;
+      saveState();
+      updateMiningVisuals();
+      $("daily-status").textContent = "Mining paused. Resume anytime.";
+    });
 
-const query = new URLSearchParams(location.search);
-const startParam = query.get("tgWebAppStartParam") || "";
-if (startParam.startsWith("ref_")) {
-  console.info("Referral claim received.");
-}
-</script>
+    $("collect-profit-button").addEventListener("click", () => {
+      if (state.pendingProfit <= 0) {
+        $("daily-status").textContent = "No profit available to collect yet.";
+        return;
+      }
+      state.dailyBalance += state.pendingProfit;
+      state.pendingProfit = 0;
+      state.miningBalance = 0;
+      saveState();
+      render();
+      $("daily-status").textContent = "Profit collected into daily balance.";
+    });
+
+    setInterval(() => {
+      applyMiningProgress();
+    }, 1000);
+
+    document.addEventListener("visibilitychange", () => {
+      applyMiningProgress();
+    });
+
+    window.addEventListener("pagehide", () => {
+      applyMiningProgress();
+    });
+
+    window.addEventListener("pageshow", () => {
+      applyMiningProgress();
+    });
+
+    $("daily-bonus").addEventListener("click", () => {
+      if (state.lastDailyClaim === todayKey()) {
+        $("daily-status").textContent = "Daily bonus already claimed today.";
+        return;
+      }
+      state.goldEnergy += CONFIG.dailyBonusGold;
+      state.lastDailyClaim = todayKey();
+      saveState();
+      render();
+      refreshDailyButton();
+      $("daily-status").textContent = "Daily bonus added: +5 Gold Energy.";
+    });
+
+    function createReferralLink() {
+      if (!CONFIG.botUsername || CONFIG.botUsername === "YOUR_BOT_USERNAME") {
+        $("referral-link").value = "Set botUsername in CONFIG first.";
+      } else if (!user?.id) {
+        $("referral-link").value = "Open the app through Telegram to create your referral link.";
+      } else {
+        $("referral-link").value = "https://t.me/" + CONFIG.botUsername + "?startapp=" + encodeURIComponent("ref_" + user.id);
+      }
+    }
+    createReferralLink();
+
+    $("copy-button").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText($("referral-link").value);
+        $("copy-button").textContent = "Copied";
+        setTimeout(() => $("copy-button").textContent = "Copy", 1400);
+      } catch (_) {
+        $("referral-link").select();
+        $("copy-button").textContent = "Select link";
+      }
+    });
+
+    $("share-button").addEventListener("click", () => {
+      const link = $("referral-link").value;
+      if (!user?.id || CONFIG.botUsername === "YOUR_BOT_USERNAME") {
+        alert("Configure your bot username and open the app in Telegram first.");
+        return;
+      }
+      const url = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("Join me on MineHub!");
+      if (tg?.openTelegramLink) tg.openTelegramLink(url); else window.open(url, "_blank");
+    });
+
+    $("reward-button").addEventListener("click", async () => {
+      const status = $("reward-status");
+      if (!CONFIG.rewardBlockId || CONFIG.rewardBlockId.includes("YOUR_")) {
+        status.textContent = "Enter your approved AdsGram Reward block ID in CONFIG.";
+        return;
+      }
+      if (!window.Adsgram?.init) {
+        status.textContent = "AdsGram SDK unavailable. Check your block ID and network connection.";
+        return;
+      }
+      try {
+        status.textContent = "Loading optional ad...";
+        const controller = window.Adsgram.init({ blockId: CONFIG.rewardBlockId });
+        const result = await controller.show();
+        if (result?.done) {
+          state.goldEnergy += CONFIG.energyPerAd;
+          saveState();
+          render();
+          status.textContent = "Reward added: +5 Gold Energy.";
+        } else {
+          status.textContent = "Ad not completed. No reward added.";
+        }
+      } catch (_) {
+        status.textContent = "Ad unavailable or closed. No reward added.";
+      }
+    });
+
+    if (/^task-\d+$/.test(CONFIG.taskBlockId)) {
+      const container = $("task-container");
+      container.replaceChildren();
+      const task = document.createElement("adsgram-task");
+      task.setAttribute("data-block-id", CONFIG.taskBlockId);
+      task.setAttribute("data-debug", "false");
+      task.addEventListener("reward", () => {
+        state.goldEnergy += CONFIG.energyPerTask;
+        saveState();
+        render();
+        $("task-status").textContent = "Task reward added: +5 Gold Energy.";
+      });
+      task.addEventListener("onError", () => { container.textContent = "Task could not load. Try again later."; });
+      task.addEventListener("onBannerNotFound", () => { container.textContent = "No task is available right now."; });
+      container.appendChild(task);
+    }
+
+    $("mining-status-button").addEventListener("click", () => {
+      $("mining-status").textContent = state.miningActive
+        ? "Mining is active and the live profit is increasing."
+        : "Mining is ready to start.";
+    });
+
+    $("withdraw-button").addEventListener("click", () => {
+      const address = $("ltc-address").value.trim();
+      const amount = Number($("withdraw-amount").value);
+
+      if (!address) {
+        $("withdraw-status").textContent = "Enter your Litecoin receiving address.";
+        return;
+      }
+      if (!Number.isFinite(amount) || amount < CONFIG.minimumWithdrawalUSD) {
+        $("withdraw-status").textContent = "Minimum withdrawal amount is $5.00.";
+        return;
+      }
+      if (state.dailyBalance < amount) {
+        $("withdraw-status").textContent = "Insufficient daily balance. You need at least $5.00 to withdraw.";
+        return;
+      }
+
+      state.dailyBalance -= amount;
+      saveState();
+      render();
+      $("withdraw-status").textContent = "Withdrawal request created. Daily balance has been reduced by $" + Number(amount).toFixed(2) + ".";
+    });
+
+    const query = new URLSearchParams(location.search);
+    const startParam = query.get("tgWebAppStartParam") || "";
+    if (startParam.startsWith("ref_")) {
+      console.info("Referral claim received.");
+    }
+  </script>
 </body>
 </html>
